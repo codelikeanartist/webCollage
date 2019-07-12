@@ -7,3 +7,5 @@ Web-based collage of flip-chart items. Collaborative version planned
  * [Hammerjs, for Muuri](https://hammerjs.github.io/)
  * [Web animations, for Muuri](https://github.com/web-animations/web-animations-js)
  
+# Preview
+[Live version](https://webcollage.codelikeanartist.de/)
