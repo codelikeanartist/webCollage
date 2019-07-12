@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Web-Collage</title>
+  <meta name="description" content="Web Collage: web base flip chart">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="author" content="Andreas Kugel">
+  <link rel="shortcut icon" type="image/x-icon" href="img/collage.png" />
+  <link rel="stylesheet" href="css/flat.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/custom2.css">
+  <link rel="stylesheet" href="css/grid.css">
+</head>
+
+<body>
+
+	<div>
+    <h2 class="section-title"><span>Erinnern und Vergessen</span></h2>
+	</div>
+	<!-- remove debug on production >
+    <p id="debug"></p>
+	-->
+
+	<!-- the modal -->
+	<div class="modal" id="modal">
+		<!-- following div will be replaced -->
+		<div class="modal-content">This is not modal</div>
+	</div>
+
+	<!-- the main content -->
+
+	<div class="outer-grid">
+
+		<section class="left-pane">
+		<div class="board-column-header">Add ...</div>
+		<p></p>
+		<!--button class="mui-btn mui-btn--primary" >Text</button-->
+		<button class="blue-button" onclick="newtext()">Text</button>
+		<button class="blue-button" onclick='newsketch("123")'>Sketch</button>
+		<button class="blue-button" onclick='newframe()'>Link</button>
+		<button class="blue-button" onclick='newInpBtn("imageUp")'>Image</button>
+		<button class="blue-button" onclick='newInpBtn("videoUp")'>Video</button>
+		<div style="visibility:hidden; height:0;" >
+			<input id="imageUp" onchange='newimage()' type="file" value="Image" accept="image/*" />
+			<input id="videoUp" onchange='newvideo()' type="file" value="Video" accept="video/*"/>
+		</div>
+		<p></p>
+		<div>
+			<label class="board-column-header">Artwork</label>			
+			<select id="artselect" class="select-blue">
+			</select>			
+		</div>
+		<p></p>
+		<button class="green-button" onclick='saveAll()'>Save</button>
+		<a id="save" style="display:none">Download</a>
+		</section>
+
+
+		<section class="middle-pane">
+		<div class="board-column-header">Editor</div>
+		<p></p>
+		<div id="editor"></div>
+		</section>
+
+
+  <section class="right-pane chart">
+
+
+    <div class="board">
+		<!-- items added by script -->
+    </div>
+
+  </section>
+
+  </div>
+
+  <script src="js/sketch.min.js"></script>
+  <script src="js/hammer.min.js"></script>
+  <script src="js/web-animations.min.js"></script>
+  <script src="js/muuri.js"></script>
+  <script src="js/custom.js"></script>
+
+</body>
+
+</html>
