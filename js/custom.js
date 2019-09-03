@@ -10,7 +10,8 @@ var textId = 0
 var linkId = 0
 var imgId = 0
 var sketchId = 0
-var zooming = null
+var zooming = false
+var userId = "userId"
 
 // item storage
 var itemList = []
@@ -19,20 +20,47 @@ function addItem(ex,type,id,data){
 	i.work = ex
 	i.type = type
 	i.id = id
+	i.divId = "undefined" // updated after inserting
 	i.data = data
-	i.tag = "tag not set" // do it when saving"
+	i.tag = "tag not set" // column name. do it when saving"
 	itemList.push(i)	// add item
 	console.log("items: ",itemList.length)
 }
+
+function findItem(id){
+	let i = -1
+	//console.log("Searching for: ",id, "total items: ",itemList.length)
+	for (it in itemList) {
+		//console.log("Current: ",itemList[it].divId)
+		if (itemList[it].divId === id) {
+			//console.log("Found item ",id," at ",it)
+			i = it;
+			break
+		}
+	}
+	return i
+}
+
+
 async function saveAll(){
 	console.log("saving items: ",itemList.length)
 	let s = {}
-	s.user = "user id" 
+	s.user = userId
 	s.tags = categories
 	s.works = works
 	for (i in itemList) { // update all tags
-		let t = "find tag not implemented"
-		itemList[i].tag = t
+		let e = document.getElementById(itemList[i].divId)
+		//console.log("Saving id: ",e.id)
+		let p = e.parentElement  // we should know where the element was placed last
+		//console.log("Parent id: ",p.id)
+		// find column from parent id
+		for (c in categories) {
+			if (p.id === "board-column_" + c){
+				console.log("Tag column: ",c)
+				itemList[i].tag = categories[c]
+				break
+			}
+		}
 	}
 	s.data = itemList
 	let j = await JSON.stringify(s)
@@ -62,6 +90,50 @@ const categories = [
 */
 //  "Erzählung"
 ]
+
+// --------------------------------------------------------------
+// --------------------------------------------------------------
+// from grid demo 
+
+  // check if the element has a certain selector
+  function elementMatches(element, selector) {
+	console.log("elem match for ",selector)
+    var p = Element.prototype;
+    return (p.matches || p.matchesSelector || p.webkitMatchesSelector || p.mozMatchesSelector || p.msMatchesSelector || p.oMatchesSelector).call(element, selector);
+
+  }
+
+// remove the item by first setting display to none
+// which frees it's space in the grid
+// then remove it from the itemList
+async function removeItem(element) {
+	console.log("Removing: ",element.id)
+	let p = element.parentElement
+	console.log("Parent: ",p.id)
+	element.style.display = "none"; 
+	// get item list index
+	let i = findItem(element.id)
+	// remove item
+	if (i >= 0) {
+		itemList.splice(i,1) // this removes the single item from the list
+	}
+	
+	// find column from parent id
+	for (c in categories) {
+		if (p.id === "board-column_" + c){
+			console.log("delete from column: ",c)
+			columnGrids[c].refreshItems().layout()
+		  	await Sleep(100)
+			break
+		}
+	}
+}
+
+
+// --------------------------------------------------------------
+// --------------------------------------------------------------
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -97,7 +169,26 @@ document.addEventListener('DOMContentLoaded', function() {
         dragSortInterval: 10, // was 0
         dragContainer: document.body,
         dragReleaseDuration: 400,
-        dragReleaseEasing: 'ease'
+        dragReleaseEasing: 'ease',
+
+		//
+		dragStartPredicate: function (item, event) {
+		  let isRemoveAction = elementMatches(event.target, '.item-remove');
+		  let isZoomAction = elementMatches(event.target, '.item-zoom');
+		  let e = item.getElement()
+		  if (isRemoveAction) {
+				console.log("remove item: ", e.id)
+				removeItem(e)
+		  }
+		  if (isZoomAction) {
+				console.log("zoom item: ", e.id)
+				zoom(e.id)
+		  }
+		  if (isZoomAction) console.log("zoom item", e.id)
+		  return (!isRemoveAction && !isZoomAction) ? Muuri.ItemDrag.defaultStartPredicate(item, event) : false;
+		}
+
+
       })
       .on('dragStart', function(item) {
         ++dragCounter;
@@ -128,7 +219,7 @@ document.addEventListener('DOMContentLoaded', function() {
   boardGrid = new Muuri(board, {
     layoutDuration: 400,
     layoutEasing: 'ease',
-    dragEnabled: true,
+    dragEnabled: false, // we don't drag the columns
     dragSortInterval: 10, // was 0
     dragStartPredicate: {
       handle: '.board-column-header'
@@ -149,66 +240,43 @@ document.addEventListener('DOMContentLoaded', function() {
   // set default layout
   toWide()
 
-  // zooming with modal is good
-  /* 
-  // start auto zoom
-  var autoZoom = async function(){
-	const ton = 3000
-	const toff = 5000
-	await Sleep(ton);
-	if (zooming) {
-		console.log("unzooming: ",zooming)
-		let z = document.getElementById("modal")
-		// removal class
-		z.classList.remove("modal-shown")
-		// remove content
-		while (z.firstChild) {
-			console.log("remove child")
-			z.removeChild(z.firstChild);
-		}
-		zooming = null
-	}
-	await Sleep(ton);
-	let c = getRandomInt(categories.length) 
-	let list = columnGrids[c].getItems()
-	if (list.length > 0) {
-		let r = getRandomInt(list.length)
-		console.log("selected: ",c,r)
-		let colId = "board-column_" + c
-		console.log("column: ",colId)
-		let col = document.getElementById(colId)
-		let items = col.children
-		console.log("Children: ",items.length)
-		try {
-		let z = items[r] // this is the element to zoom
-		let id = z.getAttribute("id")
-		console.log("zooming: ",id)
-
-		// get modal container
-		let m = document.getElementById("modal")
-		m.innerHTML = z.innerHTML // copy
-		zooming = id
-		// activate
-		m.classList.add('modal-shown');
-		} catch (err) {
-			console.log("zoom error: ",err.message)
-			zooming = null
-			document.getElementById("modal").classList.remove("modal-shown")
-		}
-
-	} 
-	console.log("autozoom...")
-	autoZoom()
-  }
-
-  autoZoom()
-    */
-
-
 });
 
 
+// zoom functions
+function zoom(id){
+	// don't act if zooming
+	if (!zooming) {
+		console.log("zooming: ",id)
+		// get modal container
+		let m = document.getElementById("modal")
+		let z = document.getElementById(id)
+		// content is in child 1, don't remove child 0
+		let c = m.children[1]
+		c.innerHTML = z.innerHTML // copy
+		zooming = true
+		// activate
+		m.classList.add('modal-shown');
+	} 
+}
 
+function zoomEnd(){
+	// don't act if not zooming
+	if (zooming) {
+		console.log("unzooming: ",zooming)
+		let z = document.getElementById("modal") // container
+		// removal class
+		z.classList.remove("modal-shown")
+		// content is in child 1, don't remove child 0
+		let c = z.children[1]
+		// remove content
+		while (c.firstChild) {
+			console.log("remove child")
+			c.removeChild(c.firstChild);
+		}
+		zooming = false
+	} 
+}
 
 async function inserttext(t, ex) {
   todo = columnGrids[0]; //muuri grid
@@ -216,10 +284,19 @@ async function inserttext(t, ex) {
   itemId ++
   // Generate new element
   var id = todo.getItems().length + 1
+  // update the divId of the last element
+  let divId = "item_" + itemId
+  itemList[itemList.length - 1].divId = divId
   var newElem = document.createElement('div');
   var content = '<div class="board-item"'
   content += 'id=item_' + itemId + ''
-  content += '><div class="board-item-content"><h3>' + ex + '</h3>'
+  content += '><div class="board-item-content"><h3>'
+  content += '<span style="float:left; background-color: white; color: black;" class="item-zoom" id="zoom_' + itemId + '">&nbsp;&#8981;&nbsp;</span>'
+  content += '<span style="max-width:70%;">' + ex + '</span>'
+  content += '<span style="float:right; background-color: white; color: black;" class="item-remove" id="remove_' + itemId + '">&nbsp;&#10007;&nbsp;</span>'
+  content += '</h3>'	
+  // adding button to content doesn't work. must use muuri api
+  // content += '<button type="button" id="btnX_' + itemId + '">X</button>'
 
   content += t
   console.log("Content size: ",t.length)
@@ -249,10 +326,16 @@ function Sleep(milliseconds) {
 // close editor and update board
 async function closeEditor(id) {
   if (id) {
+	  //await Sleep(1000);
+	  // we need to switch first, otherwise the element is inserted
+	  // with the smaller width which causes problems in the drag and drop mechanism
+	  await toWide()
+
     // get the artwork
     let aw = document.getElementById("artselect")
     let ex = aw.options[aw.selectedIndex].text;
 
+	console.log("Processing id: ",id)
     let type = id.split("_")[0]
     let t
 
@@ -313,7 +396,7 @@ async function closeEditor(id) {
     e.removeChild(e.firstChild);
   }
   //await Sleep(1000);
-  await toWide()
+  //await toWide()
 }
 
 
@@ -491,10 +574,13 @@ function newsketch() {
 
 
 // --- image
-function newimage() {
+async function newimage() {
 
   let select = document.getElementById("imageUp")
   let files = select.files;
+  // large editor area
+  await toSmall()
+
   //let files = document.getElementById("videoUp").files;
   let reader = new FileReader();
   reader.addEventListener("load", function() {
@@ -506,14 +592,15 @@ function newimage() {
     let img = reader.result;
     // console.log(img) // looks OK
 
-    // large editor area
-    toSmall()
-
     let e = document.getElementById("editor")
     // remove all, if exist
     while (e.firstChild) {
       e.removeChild(e.firstChild);
     }
+
+	  // get width of the element
+	  let width = e.offsetWidth
+	  // console.log("editor width: ",width)
 
     // create the image field
     imgId++
@@ -552,15 +639,16 @@ function newimage() {
 
 
 // -- iframe
-function newframe() {
+async function newframe() {
   // large editor area
-  toSmall()
+  await toSmall()
 
   let e = document.getElementById("editor")
   // remove all, if exist
   while (e.firstChild) {
     e.removeChild(e.firstChild);
   }
+
   // create the input field
   linkId++
   let lid = "lfield_" + linkId
@@ -592,7 +680,30 @@ function newframe() {
 
 function previewLink(lid, fid) {
   let l = document.getElementById(lid)
-  console.log(l.value);
+  let lnk = l.value
+  console.log(lnk);
+
+  // check http://
+  if ((lnk.indexOf("http://") < 0) && (lnk.indexOf("https://") < 0)) {
+	lnk = "https://" + lnk
+	l.value = lnk
+  }
+
+  // check youtube embedding
+  // <iframe width="424" height="238" src="https://www.youtube.com/embed/qEWxmXwSOc0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  if (lnk.indexOf("<iframe") >= 0) {
+	console.log("Iframe link: ", lnk)
+	let sl = lnk.split("src=")[1].split(" ")[0].split('"')[1]
+	console.log(" -> ", sl)
+	lnk = sl
+	l.value = lnk
+  }
+
+
+  // get width of the container
+  let width = document.getElementById("editor").offsetWidth
+  console.log("editor width: ",width)
+  let height = Math.floor(width * .5)
 
   //l.value = "https://www.youtube.com/embed/1QikBm8RViA"
 
@@ -606,9 +717,11 @@ function previewLink(lid, fid) {
   ff.setAttribute("width", "100%")
   //ff.removeAttribute("height")
   //ff.setAttribute("max-height","40vh")
+  ff.setAttribute("height",height+"px")
   ff.setAttribute("frameborder", "0")
   ff.setAttribute("allow", "autoplay; encrypted-media;")
-  ff.setAttribute("src", l.value + "?playsinline=1")
+  ff.setAttribute("src", lnk + "?playsinline=1")
+  //ff.setAttribute("sandbox",true)
   f.appendChild(ff)
 }
 
@@ -642,3 +755,4 @@ function newInpBtn(id) {
   let inp = document.getElementById(id)
   inp.click()
 }
+

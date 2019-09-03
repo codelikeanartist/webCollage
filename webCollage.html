@@ -10,9 +10,7 @@
   <meta name="author" content="Andreas Kugel">
   <link rel="shortcut icon" type="image/x-icon" href="img/collage.png" />
   <link rel="stylesheet" href="css/flat.css">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/custom2.css">
-  <link rel="stylesheet" href="css/grid.css">
+  <link rel="stylesheet" href="css/custom.css">
 </head>
 
 <body>
@@ -26,7 +24,8 @@
 
 	<!-- the modal -->
 	<div class="modal" id="modal">
-		<!-- following div will be replaced -->
+		<div class="modal-button"><button id="modal-button" type="button" onclick="zoomEnd()">Close</button></div>
+		<!-- following div's inner html will be replaced -->
 		<div class="modal-content">This is not modal</div>
 	</div>
 
@@ -78,9 +77,8 @@
   </div>
 
   <script src="js/sketch.min.js"></script>
-  <script src="js/hammer.min.js"></script>
   <script src="js/web-animations.min.js"></script>
-  <script src="js/muuri.js"></script>
+  <script src="js/muuri.min.js"></script>
   <script src="js/custom.js"></script>
 
 </body>
