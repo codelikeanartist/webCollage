@@ -10,7 +10,7 @@ Web-based collage of flip-chart items. Collaborative version planned
 # Preview
 [Live version](https://webcollage.codelikeanartist.de/)
 
-Data files go into the releases of the corresponding gist: https://gist.github.com/codelikeanartist/d34b3e56c4f76e90a3af299976f7879c
+Data files go into the releases of the corresponding gist: https://gist.github.com/codelikeanartist/d34b3e56c4f76e90a3af299976f7879c However, to date the file can only be saved but not yet loaded. Stay tuned...
 
 
 Releases allow to store larger files:
