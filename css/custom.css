@@ -1,4 +1,56 @@
 
+/* Grid */
+.outer-grid {
+	display: grid;
+	/* size is adjusted in realtime */
+	grid-gap: 2px;
+	background-color: #191919;
+	padding: 5px;
+
+}
+
+.outer-grid>div {
+	text-align: center;
+	padding: 10px 0;
+	font-size: 30px;
+}
+
+.left-pane {
+	background-color: #fae895;
+
+}
+
+.left-pane label:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.left-pane label:before {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.middle-pane {
+	background-color: #80c6ed;
+
+}
+
+/* inner grid goes into right pane */
+.right-pane {
+	background-color: #fae895;
+
+}
+
+/* no resize on text area inputs */
+.tfield {
+	resize: none;
+}
+
+
+/* .grid-container is muuri ... /
+
+
 /* Board */
 
 section {
@@ -7,9 +59,33 @@ section {
 	margin: unset;
 }
 
+/* Section titles */
+
 .section-title {
-	margin: 10px 0;
+  color: #3e3e3e;
+  font-size: 26px;
+  font-weight: 700;
+  margin: 10px 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-align: center;
 }
+.section-title > span {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
+.section-title > span:after {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  right: 10px;
+  height: 2px;
+  background: #e6e6e6;
+}
+
 
 .board {
   position: relative;
@@ -22,7 +98,7 @@ section {
   right: 0;
 /*  width: 19%; */
   margin: 0 .3%;
-  background: #f0f0f0;
+  background: #e6e6e6;
   border-radius: 3px;
   z-index: 1;
 }
@@ -38,7 +114,7 @@ section {
 
 	border-radius: 4px;
 	font-weight: bold;
-	color: #FFF;
+	color: #191919;
 	margin-top: 5px;
 	text-align: center;
 	cursor: pointer;
@@ -47,7 +123,7 @@ section {
 	line-height:1.2em !important;
 	width: 100%;
 	border: 3px solid #272a34;
-	background: #737680;
+	background: #fae895;
 	display: block;
 	text-transform: capitalize;
 	overflow:hidden;
@@ -56,19 +132,11 @@ section {
 
 }
 
-.board-column.todo .board-column-header {
-  background: #4A9FF9;
-}
-.board-column.working .board-column-header {
-  background: #f9944a;
-}
-.board-column.done .board-column-header {
-  background: #2ac06d;
-}
 .board-column-content {
   position: relative;
   border: 10px solid transparent;
   min-height: 95px;
+  background-color: #e6e6e6
 
 }
 .board-item {
@@ -76,6 +144,7 @@ section {
   width: 100%;
   margin: 5px 0;
   overflow:hidden;
+  background-color: #e6e6e6;
 
 }
 .board-item.muuri-item-releasing {
@@ -97,7 +166,7 @@ section {
   cursor: pointer;
   -webkit-box-shadow: 0px 1px 3px 0 rgba(0,0,0,0.2);
   box-shadow: 0px 1px 3px 0 rgba(0,0,0,0.2);
-  max-height: 200px;
+/*  max-height: 200px;*/
 
 }
 
@@ -124,12 +193,14 @@ h3 {
 .sketch {
     border: 3px solid #272a34;
     border-radius: 4px;
+	background-color:  #e6e6e6;
 }
 
 body {
 	font-size: 2vw !important;
 	font-family: unset !important;
 	font-family: sans-serif;
+	background-color:  #e6e6e6;
 }
 
 button {
@@ -139,7 +210,6 @@ button {
 	margin: unset !important;
 	max-width: 15vw !important;
 }
-
 
 .select-red {
     font-size: .8em !important;
@@ -151,9 +221,9 @@ button {
     padding-right: 40px;
     text-align-last: center;
     background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOSIgaGVpZ2h0PSIxOSIgeD0iMCIgeT0iMCIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMTkgMTkiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC4wMzM5MjgzNiwwLDAsMC4wMzM5MjgzNiwtNi43ODU2NTUyLDEuNjk2NzE2M2UtNSkiPgogIDxwYXRoIGQ9Ik0gNDgwLDM0NC4xODEgMjY4Ljg2OSwxMzEuODg5IGMgLTE1Ljc1NiwtMTUuODU5IC00MS4zLC0xNS44NTkgLTU3LjA1NCwwIC0xNS43NTQsMTUuODU3IC0xNS43NTQsNDEuNTcgMCw1Ny40MzEgbCAyMzcuNjMyLDIzOC45MzcgYyA4LjM5NSw4LjQ1MSAxOS41NjIsMTIuMjU0IDMwLjU1MywxMS42OTggMTAuOTkzLDAuNTU2IDIyLjE1OSwtMy4yNDcgMzAuNTU1LC0xMS42OTggTCA3NDguMTg2LDE4OS4zMiBjIDE1Ljc1NiwtMTUuODYgMTUuNzU2LC00MS41NzEgMCwtNTcuNDMxIC0xNS43NTYsLTE1Ljg2IC00MS4yOTksLTE1Ljg1OSAtNTcuMDUxLDAgeiIvPgogPC9nPgo8L3N2Zz4K) no-repeat right 10px center #FFF;
-    background-color: #b8174c;
 	color: #fff;
-    border-color: #811035;
+    background-color: #fd3535;
+    border-color: #191919;
 }
 
 .select-blue {
@@ -166,9 +236,24 @@ button {
     padding-right: 40px;
     text-align-last: center;
     background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxOSIgaGVpZ2h0PSIxOSIgeD0iMCIgeT0iMCIgdmVyc2lvbj0iMS4xIiB2aWV3Qm94PSIwIDAgMTkgMTkiIHhtbDpzcGFjZT0icHJlc2VydmUiPgogPGcgdHJhbnNmb3JtPSJtYXRyaXgoMC4wMzM5MjgzNiwwLDAsMC4wMzM5MjgzNiwtNi43ODU2NTUyLDEuNjk2NzE2M2UtNSkiPgogIDxwYXRoIGQ9Ik0gNDgwLDM0NC4xODEgMjY4Ljg2OSwxMzEuODg5IGMgLTE1Ljc1NiwtMTUuODU5IC00MS4zLC0xNS44NTkgLTU3LjA1NCwwIC0xNS43NTQsMTUuODU3IC0xNS43NTQsNDEuNTcgMCw1Ny40MzEgbCAyMzcuNjMyLDIzOC45MzcgYyA4LjM5NSw4LjQ1MSAxOS41NjIsMTIuMjU0IDMwLjU1MywxMS42OTggMTAuOTkzLDAuNTU2IDIyLjE1OSwtMy4yNDcgMzAuNTU1LC0xMS42OTggTCA3NDguMTg2LDE4OS4zMiBjIDE1Ljc1NiwtMTUuODYgMTUuNzU2LC00MS41NzEgMCwtNTcuNDMxIC0xNS43NTYsLTE1Ljg2IC00MS4yOTksLTE1Ljg1OSAtNTcuMDUxLDAgeiIvPgogPC9nPgo8L3N2Zz4K) no-repeat right 10px center #FFF;
-    background-color: #367bf0;
 	color: #fff;
-    border-color: #2656a8;
+    background-color: #5e95f3;
+    border-color: #191919;
+}
+
+.blue-button {
+    background-color: #5e95f3;
+    border-color: #191919;
+}
+
+.green-button {
+    background-color: #24aa6e;
+    border-color: #191919;
+}
+
+.red-button {
+    background-color: #fd3535;
+    border-color: #191919;
 }
 
 
@@ -188,7 +273,10 @@ textarea {
 	line-height: 1.2em !important;
 }
 
-/* put modal in middle of window */
+/* put modal in middle of window **
+** the actual modal content goes into modal content
+** which has a relative position
+*/
 .modal {
         position: fixed;
         left: 0;
@@ -198,26 +286,29 @@ textarea {
         background-color: rgba(255, 255, 255,.8);
         opacity: 0;
         visibility: hidden;
-        transform: scaleX(1.1) scaleY(1.1);
         transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
         font-family: sans-serif;
 }
 .modal-content {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
+		/* width: 80%; */
+		width: 75%;
+		max-height:90%;
+        top: 0;
+        left: 12%;
+        background-color: #e6e6e6;
         padding: 1rem 1.5rem;
-        width: 24rem;
         border-radius: 0.5rem;
+}
+
+.modal-button {
+	max-width:10% !important; 
 }
 
 .modal-shown {
 		z-index: 999;
         opacity: 1;
         visibility: visible;
-        transform: scaleX(.8) scaleY(.8);
         transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
 }
 
@@ -232,7 +323,9 @@ muuri-item-shown:hover {
   .board-item-content {
     text-align: center;
   }
+  /* unclear why this was set to display none. If none, will hide zoom/delete buttons **
   .board-item-content span {
     display: none;
   }
+ */
 }

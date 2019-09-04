@@ -290,14 +290,16 @@ async function inserttext(t, ex) {
   var newElem = document.createElement('div');
   var content = '<div class="board-item"'
   content += 'id=item_' + itemId + ''
-  content += '><div class="board-item-content"><h3>'
-  content += '<span style="float:left; background-color: white; color: black;" class="item-zoom" id="zoom_' + itemId + '">&nbsp;&#8981;&nbsp;</span>'
-  content += '<span style="max-width:70%;">' + ex + '</span>'
-  content += '<span style="float:right; background-color: white; color: black;" class="item-remove" id="remove_' + itemId + '">&nbsp;&#10007;&nbsp;</span>'
-  content += '</h3>'	
-  // adding button to content doesn't work. must use muuri api
-  // content += '<button type="button" id="btnX_' + itemId + '">X</button>'
+  content += '><div class="board-item-content">'
+  // start with headline and zoom/delete buttone
+  content += '<h3>'
+  content += '<span style="float:left;background-color: white; color: black;" class="item-zoom" id="zoom_' + itemId + '">&nbsp;&#8981;&nbsp;</span>'
+  content += '<span>' + ex + '</span>'
+  content += '<span style="float:right;background-color: white; color: black;" class="item-remove" id="remove_' + itemId + '">&nbsp;&#10007;&nbsp;</span>'
 
+  content += '</h3>'	
+
+  // here comes the real content
   content += t
   console.log("Content size: ",t.length)
 
